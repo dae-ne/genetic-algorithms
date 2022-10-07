@@ -15,10 +15,10 @@ from core.events import AlgorithmFinishedEvent, EventListener
 
 class AlgorithmFinishedPlotEventListener(EventListener):
     def listen(self):
-        pub.subscribe(self.__handler, AlgorithmFinishedEvent.EVENT_NAME)
+        pub.subscribe(self.__handle, AlgorithmFinishedEvent.EVENT_NAME)
 
     @staticmethod
-    def __handler(event: AlgorithmFinishedEvent):
+    def __handle(event: AlgorithmFinishedEvent):
         window = tk.Toplevel()
 
         # !!! just testing the matplotlib
