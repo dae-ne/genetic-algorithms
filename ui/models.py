@@ -30,7 +30,7 @@ class FormModel:
             raise ValueError("Empty selection method")
 
     def run_algorithm(self):
-        algoritm_thread = AsyncGeneticAlgorithm(
+        algorithm_thread = AsyncGeneticAlgorithm(
             self.population_size,
             self.selection_method)
-        algoritm_thread.start()
+        algorithm_thread.start()
