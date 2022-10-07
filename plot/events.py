@@ -21,6 +21,8 @@ class AlgorithmFinishedPlotEventListener(EventListener):
     def __handler(event: AlgorithmFinishedEvent):
         window = tk.Toplevel()
 
+        # !!! just testing the matplotlib
+
         # prepare data
         data = {
             'Python': 11.27,
