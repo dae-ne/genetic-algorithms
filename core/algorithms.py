@@ -1,6 +1,8 @@
 import time
 from threading import Thread
 
+from pubsub import pub
+
 from core.events import AlgorithmFinishedEvent
 
 
@@ -17,4 +19,4 @@ class AsyncGeneticAlgorithm(Thread):
         print("Data:", self.population_size, self.selection_method)
 
         event = AlgorithmFinishedEvent("value1", "value2")
-        event.publish()
+        pub.sendMessage(AlgorithmFinishedEvent.__name__, event=event)
