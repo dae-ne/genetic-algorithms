@@ -12,7 +12,7 @@ class Application(tk.Tk):
         super().__init__(*args, **kwargs)
 
         self.title("Genetic Algorithms")
-        self.minsize(400, 0)
+        self.minsize(600, 0)
         self.resizable(False, False)
 
         model = OptionsModel()
@@ -25,7 +25,9 @@ class Application(tk.Tk):
 
         sv_ttk.use_dark_theme()
 
-        event_listeners = (PlotEventListener(), DbEventListener())
+        event_listeners = (
+            PlotEventListener(),
+            DbEventListener())
 
         for event_listener in event_listeners:
             event_listener.listen()
