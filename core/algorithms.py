@@ -4,19 +4,21 @@ from threading import Thread
 from pubsub import pub
 
 from core.events import AlgorithmFinishedEvent
+from core.models import AlgorithmOptions
+from core.selection import SelectionMethodFactory
 
 
 class AsyncGeneticAlgorithm(Thread):
-    def __init__(self, population_size, selection_method):
+    def __init__(self, options: AlgorithmOptions):
         super().__init__()
-
-        self.population_size = population_size
-        self.selection_method = selection_method
+        self.options = options
 
     def run(self):
+        selection_method = SelectionMethodFactory.create(self.options)
+
         print("wait...")
         time.sleep(1)
-        print("Data:", self.population_size, self.selection_method)
+        print(self.options.__dict__)
 
         event = AlgorithmFinishedEvent("value1", "value2")
         pub.sendMessage(AlgorithmFinishedEvent.__name__, event=event)
