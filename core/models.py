@@ -25,7 +25,7 @@ class AlgorithmOptions:
                  range_from: int,
                  range_to: int,
                  population_size: int,
-                 number_of_bits: int,
+                 precision: int,
                  epochs_amount: int,
                  best_to_take: int,
                  elite_strategy_amount: int,
@@ -39,7 +39,7 @@ class AlgorithmOptions:
         self.range_from = range_from
         self.range_to = range_to
         self.population_size = population_size
-        self.number_of_bits = number_of_bits
+        self.precision = precision
         self.epochs_amount = epochs_amount
         self.best_to_take = best_to_take
         self.elite_strategy_amount = elite_strategy_amount

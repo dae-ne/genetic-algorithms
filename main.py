@@ -13,7 +13,7 @@ class Application(tk.Tk):
 
         self.title("Genetic Algorithms")
         self.minsize(600, 0)
-        self.resizable(False, False)
+        self.resizable(False, True)
 
         model = OptionsModel()
         view = View(self)

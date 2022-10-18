@@ -14,7 +14,7 @@ class OptionsModel:
         self.__range_from = None
         self.__range_to = None
         self.__population_size = None
-        self.__number_of_bits = None
+        self.__precision = None
         self.__epochs_amount = None
         self.__best_to_take = None
         self.__elite_strategy_amount = None
@@ -32,7 +32,7 @@ class OptionsModel:
 
     @range_from.setter
     def range_from(self, value):
-        if value != int(value):
+        if value != float(value):
             raise ValueError("")
 
         self.__range_from = value
@@ -43,7 +43,7 @@ class OptionsModel:
 
     @range_to.setter
     def range_to(self, value):
-        if value != int(value):
+        if value != float(value):
             raise ValueError("")
 
         self.__range_to = value
@@ -60,15 +60,15 @@ class OptionsModel:
         self.__population_size = value
 
     @property
-    def number_of_bits(self):
-        return self.__number_of_bits
+    def precision(self):
+        return self.__precision
 
-    @number_of_bits.setter
-    def number_of_bits(self, value):
+    @precision.setter
+    def precision(self, value):
         if value != int(value):
             raise ValueError("")
 
-        self.__number_of_bits = value
+        self.__precision = value
 
     @property
     def epochs_amount(self):
@@ -198,10 +198,10 @@ class View(ttk.Frame):
         for column_index in range(number_of_columns):
             self.columnconfigure(column_index, weight=1)
 
-        self.range_from = self.add_spinbox(0, "Range from", 0, 100, 0, 0)
-        self.range_to = self.add_spinbox(0, "Range to", 0, 100, 0, 1)
+        self.range_from = self.add_spinbox(-10, "Range from", -100, 100, 0, 0)
+        self.range_to = self.add_spinbox(10, "Range to", -100, 100, 0, 1)
         self.population_size = self.add_spinbox(20, "Population size", 0, 100, 0, 2)
-        self.number_of_bits = self.add_spinbox(20, "Number of bits", 0, 100, 0, 3)
+        self.precision = self.add_spinbox(5, "Precision", 0, 20, 0, 3)
         self.epochs_amount = self.add_spinbox(100, "Epochs amount", 0, 100, 0, 4)
 
         self.best_to_take = self.add_spinbox(0, "Best to take", 0, 100, 1, 0)
@@ -251,10 +251,10 @@ class View(ttk.Frame):
 
     def submit(self):
         self.controller.submit(
-            int(self.range_from.get()),
-            int(self.range_to.get()),
+            float(self.range_from.get()),
+            float(self.range_to.get()),
             int(self.population_size.get()),
-            int(self.number_of_bits.get()),
+            int(self.precision.get()),
             int(self.epochs_amount.get()),
             int(self.best_to_take.get()),
             int(self.elite_strategy_amount.get()),
@@ -302,7 +302,7 @@ class Controller:
                range_from,
                range_to,
                population_size,
-               number_of_bits,
+               precision,
                epochs_amount,
                best_to_take,
                elite_strategy_amount,
@@ -316,7 +316,7 @@ class Controller:
         self.model.range_from = range_from
         self.model.range_to = range_to
         self.model.population_size = population_size
-        self.model.number_of_bits = number_of_bits
+        self.model.precision = precision
         self.model.epochs_amount = epochs_amount
         self.model.best_to_take = best_to_take
         self.model.elite_strategy_amount = elite_strategy_amount
