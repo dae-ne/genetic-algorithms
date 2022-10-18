@@ -59,17 +59,17 @@ class Candidate:
         self.__fitness_function = value
 
     @property
-    def decimal_solutions(self):
+    def decoded_chromosomes(self):
         return [chromosome.decode_to_decimal() for chromosome in self.chromosomes]
 
     @property
     def score(self):
-        return self.fitness_function.evaluate(self.decimal_solutions)
+        return self.fitness_function.evaluate(self.decoded_chromosomes)
 
     def __str__(self):
         return "score = {}, {}".format(self.score, ", ".join(
             ["x{} = {} ({})".format(i, solution, chromosome) for i, (chromosome, solution)
-             in enumerate(zip(self.chromosomes, self.decimal_solutions))]))
+             in enumerate(zip(self.chromosomes, self.decoded_chromosomes))]))
 
 
 class Chromosome:
