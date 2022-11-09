@@ -16,12 +16,12 @@ class OptionsModel:
         self.__population_size = None
         self.__precision = None
         self.__epochs_amount = None
-        self.__best_to_take = None
         self.__elite_strategy_amount = None
         self.__crossover_probability = None
         self.__mutation_probability = None
         self.__inversion_probability = None
         self.__selection_method = None
+        self.__selection_param = None
         self.__crossover_method = None
         self.__mutation_method = None
         self.__maximization = None
@@ -54,7 +54,7 @@ class OptionsModel:
 
     @population_size.setter
     def population_size(self, value):
-        if value != int(value):
+        if value != int(value) or value < 2:
             raise ValueError("")
 
         self.__population_size = value
@@ -65,7 +65,7 @@ class OptionsModel:
 
     @precision.setter
     def precision(self, value):
-        if value != int(value):
+        if value != int(value) or value < 0:
             raise ValueError("")
 
         self.__precision = value
@@ -76,21 +76,10 @@ class OptionsModel:
 
     @epochs_amount.setter
     def epochs_amount(self, value):
-        if value != int(value):
+        if value != int(value) or value < 0:
             raise ValueError("")
 
         self.__epochs_amount = value
-
-    @property
-    def best_to_take(self):
-        return self.__best_to_take
-
-    @best_to_take.setter
-    def best_to_take(self, value):
-        if value != int(value):
-            raise ValueError("")
-
-        self.__best_to_take = value
 
     @property
     def elite_strategy_amount(self):
@@ -98,7 +87,7 @@ class OptionsModel:
 
     @elite_strategy_amount.setter
     def elite_strategy_amount(self, value):
-        if value != int(value):
+        if value != int(value) or value < 0:
             raise ValueError("")
 
         self.__elite_strategy_amount = value
@@ -109,7 +98,7 @@ class OptionsModel:
 
     @crossover_probability.setter
     def crossover_probability(self, value):
-        if value != int(value):
+        if value != int(value) or value <= 0:
             raise ValueError("")
 
         self.__crossover_probability = value
@@ -120,7 +109,7 @@ class OptionsModel:
 
     @mutation_probability.setter
     def mutation_probability(self, value):
-        if value != int(value):
+        if value != int(value) or value < 0:
             raise ValueError("")
 
         self.__mutation_probability = value
@@ -131,7 +120,7 @@ class OptionsModel:
 
     @inversion_probability.setter
     def inversion_probability(self, value):
-        if value != int(value):
+        if value != int(value) or value < 0:
             raise ValueError("")
 
         self.__inversion_probability = value
@@ -146,6 +135,17 @@ class OptionsModel:
             raise ValueError("")
 
         self.__selection_method = value
+
+    @property
+    def selection_param(self):
+        return self.__selection_param
+
+    @selection_param.setter
+    def selection_param(self, value):
+        if value != int(value):
+            raise ValueError("")
+
+        self.__selection_param = value
 
     @property
     def crossover_method(self):
@@ -200,15 +200,15 @@ class View(ttk.Frame):
 
         self.range_from = self.add_spinbox(-10, "Range from", -100, 100, 0, 0)
         self.range_to = self.add_spinbox(10, "Range to", -100, 100, 0, 1)
-        self.population_size = self.add_spinbox(20, "Population size", 0, 100, 0, 2)
+        self.population_size = self.add_spinbox(40, "Population size", 0, 100, 0, 2)
         self.precision = self.add_spinbox(5, "Precision", 0, 20, 0, 3)
         self.epochs_amount = self.add_spinbox(100, "Epochs amount", 0, 100, 0, 4)
 
-        self.best_to_take = self.add_spinbox(0, "Best to take", 0, 100, 1, 0)
-        self.elite_strategy_amount = self.add_spinbox(0, "Elite Strategy amount", 0, 100, 1, 1)
-        self.crossover_probability = self.add_spinbox(0, "Crossover probability [%]", 0, 100, 1, 2)
-        self.mutation_probability = self.add_spinbox(0, "Mutation probability [%]", 0, 100, 1, 3)
-        self.inversion_probability = self.add_spinbox(0, "Inversion probability [%]", 0, 100, 1, 4)
+        self.selection_param = self.add_spinbox(60, "Selection param ([%] for BEST, k for TOURNAMENT)", 0, 100, 1, 0)
+        self.elite_strategy_amount = self.add_spinbox(1, "Elite Strategy amount", 0, 100, 1, 1)
+        self.crossover_probability = self.add_spinbox(70, "Crossover probability [%]", 0, 100, 1, 2)
+        self.mutation_probability = self.add_spinbox(20, "Mutation probability [%]", 0, 100, 1, 3)
+        self.inversion_probability = self.add_spinbox(20, "Inversion probability [%]", 0, 100, 1, 4)
 
         self.selection_method = self.add_selectbox(
             SelectionMethod.BEST,
@@ -256,12 +256,12 @@ class View(ttk.Frame):
             int(self.population_size.get()),
             int(self.precision.get()),
             int(self.epochs_amount.get()),
-            int(self.best_to_take.get()),
             int(self.elite_strategy_amount.get()),
             int(self.crossover_probability.get()),
             int(self.mutation_probability.get()),
             int(self.inversion_probability.get()),
             self.selection_method.get(),
+            int(self.selection_param.get()),
             self.crossover_method.get(),
             self.mutation_method.get(),
             bool(self.maximization.get()))
@@ -304,12 +304,12 @@ class Controller:
                population_size,
                precision,
                epochs_amount,
-               best_to_take,
                elite_strategy_amount,
                crossover_probability,
                mutation_probability,
                inversion_probability,
                selection_method,
+               selection_param,
                crossover_method,
                mutation_method,
                maximization):
@@ -318,12 +318,12 @@ class Controller:
         self.model.population_size = population_size
         self.model.precision = precision
         self.model.epochs_amount = epochs_amount
-        self.model.best_to_take = best_to_take
         self.model.elite_strategy_amount = elite_strategy_amount
         self.model.crossover_probability = crossover_probability
         self.model.mutation_probability = mutation_probability
         self.model.inversion_probability = inversion_probability
         self.model.selection_method = selection_method
+        self.model.selection_param = selection_param
         self.model.crossover_method = crossover_method
         self.model.mutation_method = mutation_method
         self.model.maximization = maximization
