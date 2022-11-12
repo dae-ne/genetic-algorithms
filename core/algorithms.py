@@ -19,49 +19,46 @@ class AsyncGeneticAlgorithm(Thread):
         self.options = options
 
     def run(self):
-        print("wait...")
-        time.sleep(1)
-        print(self.options.__dict__)
-
-        population = Generator.generate_random_population(self.options.population_size,
-                                                          self.options.range_from,
-                                                          self.options.range_to,
-                                                          self.options.precision,
-                                                          TestFunction())
-        self.print_stats(population, with_candidates=False)
-
-        for epoch in range(self.options.epochs_amount):
-            population = self.create_next_generation(population)
-
-        print('after')
-        self.print_stats(population, with_candidates=False)
-
-        event = AlgorithmFinishedEvent("value1", "value2")
-        pub.sendMessage(AlgorithmFinishedEvent.__name__, event=event)
-
-    def create_next_generation(self, population):
         selection_method = SelectionMethodFactory.create(self.options)
         crossover_method = CrossoverMethodFactory.create(self.options)
         mutation_method = MutationMethodFactory.create(self.options)
         # inversion_method
 
+        generations = [Generator.generate_random_population(self.options.population_size,
+                                                            self.options.range_from,
+                                                            self.options.range_to,
+                                                            self.options.precision,
+                                                            TestFunction())]
+        self.print_stats(generations[0], with_candidates=False)
+
+        for epoch in range(self.options.epochs_amount):
+            generations.append(
+                self.create_next_generation(generations[-1], selection_method, crossover_method, mutation_method))
+
+        print('after')
+        self.print_stats(generations[-1], with_candidates=False)
+
+        event = AlgorithmFinishedEvent("value1", "value2")
+        pub.sendMessage(AlgorithmFinishedEvent.__name__, event=event)
+
+    def create_next_generation(self, population, selection, crossover, mutation):
         new_population = Population()
         elite = population.get_n_best_candidates(self.options.elite_strategy_amount, self.options.maximization)
         for candidate in elite:
             new_population.add_candidate(candidate)
 
-        selected_candidates = selection_method.calculate(population)
+        selected_candidates = selection.calculate(population)
         if len(selected_candidates) < 2:
             raise Exception("Less than 2 candidates were selected")
 
         while new_population.size < population.size:
             parents = random.sample(selected_candidates, 2)
-            children = crossover_method.cross(*parents)
+            children = crossover.cross(*parents)
             for child in children:
                 if new_population.size >= population.size:
                     break
 
-                mutation_method.mutate(child)
+                mutation.mutate(child)
                 # inversion
                 new_population.add_candidate(child)
 

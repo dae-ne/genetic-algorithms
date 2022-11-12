@@ -10,7 +10,7 @@ class CrossoverMethodAlgorithm(ABC):
     def __init__(self, probability):
         self.probability = probability / 100
 
-    def shouldCross(self):
+    def should_cross(self):
         return random.random() < self.probability
 
     @abstractmethod
@@ -36,7 +36,7 @@ class CrossoverMethodFactory:
 
 class CrossoverOnePointMethod(CrossoverMethodAlgorithm):
     def cross(self, parent1: Candidate, parent2: Candidate):
-        if not self.shouldCross():
+        if not self.should_cross():
             return []
 
         child1, child2 = copy.deepcopy(parent1), copy.deepcopy(parent2)
@@ -55,7 +55,7 @@ class CrossoverOnePointMethod(CrossoverMethodAlgorithm):
 
 class CrossoverTwoPointsMethod(CrossoverMethodAlgorithm):
     def cross(self, parent1, parent2):
-        if not self.shouldCross():
+        if not self.should_cross():
             return []
 
         child1, child2 = copy.deepcopy(parent1), copy.deepcopy(parent2)
@@ -75,7 +75,7 @@ class CrossoverTwoPointsMethod(CrossoverMethodAlgorithm):
 
 class CrossoverThreePointsMethod(CrossoverMethodAlgorithm):
     def cross(self, parent1, parent2):
-        if not self.shouldCross():
+        if not self.should_cross():
             return []
 
         child1, child2 = copy.deepcopy(parent1), copy.deepcopy(parent2)
@@ -104,7 +104,7 @@ class CrossoverHomoMethod(CrossoverMethodAlgorithm):
                 raise Exception("Chromosomes should have the same number of gens.")
 
             for i in range(len(gen_list1)):
-                if self.shouldCross():
+                if self.should_cross():
                     gen_list1[i], gen_list2[i] = gen_list2[i], gen_list1[i]
 
             chromosome1.gen_list = gen_list1

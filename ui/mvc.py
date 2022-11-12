@@ -204,7 +204,7 @@ class View(ttk.Frame):
         self.precision = self.add_spinbox(5, "Precision", 0, 20, 0, 3)
         self.epochs_amount = self.add_spinbox(100, "Epochs amount", 0, 100, 0, 4)
 
-        self.selection_param = self.add_spinbox(60, "Selection param ([%] for BEST, k for TOURNAMENT)", 0, 100, 1, 0)
+        self.selection_param = self.add_spinbox(60, "Selection param ([%] for BEST, k for TOUR)", 0, 100, 1, 0)
         self.elite_strategy_amount = self.add_spinbox(1, "Elite Strategy amount", 0, 100, 1, 1)
         self.crossover_probability = self.add_spinbox(70, "Crossover probability [%]", 0, 100, 1, 2)
         self.mutation_probability = self.add_spinbox(20, "Mutation probability [%]", 0, 100, 1, 3)

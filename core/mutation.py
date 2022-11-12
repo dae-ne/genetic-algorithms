@@ -9,7 +9,7 @@ class MutationMethodAlgorithm(ABC):
     def __init__(self, probability):
         self.probability = probability / 100
 
-    def shouldMutate(self):
+    def should_mutate(self):
         return random.random() < self.probability
 
     @abstractmethod
@@ -31,7 +31,7 @@ class MutationMethodFactory:
 
 class MutationOnePointMethod(MutationMethodAlgorithm):
     def mutate(self, candidate: Candidate):
-        if not self.shouldMutate():
+        if not self.should_mutate():
             return candidate
 
         for chromosome in candidate.chromosomes:
@@ -43,7 +43,7 @@ class MutationOnePointMethod(MutationMethodAlgorithm):
 
 class MutationTwoPointsMethod(MutationMethodAlgorithm):
     def mutate(self, candidate):
-        if not self.shouldMutate():
+        if not self.should_mutate():
             return candidate
 
         for chromosome in candidate.chromosomes:
