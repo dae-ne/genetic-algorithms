@@ -1,3 +1,4 @@
+import random
 from abc import ABC, abstractmethod
 
 from core.models import AlgorithmOptions, SelectionMethod
@@ -42,9 +43,19 @@ class SelectionRouletteMethod(SelectionMethodAlgorithm):
 
 
 class SelectionTournamentMethod(SelectionMethodAlgorithm):
-    def __init__(self, size=3, maximization=False):
+    def __init__(self, group_size=3, maximization=False):
         super().__init__(maximization)
-        self.size = size
+        self.group_size = group_size
 
     def calculate(self, population):
-        pass
+        random.shuffle(population.candidates)
+        candidates = []
+        for i in range(0, population.size, self.group_size):
+            group = population.candidates[i:i+self.group_size]
+            candidates.append(self.select_best_from_group(group))
+
+        return candidates
+
+    def select_best_from_group(self, group):
+        sorted_group = sorted(group, key=lambda candidate: candidate.score, reverse=self.maximization)
+        return sorted_group[0]

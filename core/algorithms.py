@@ -51,6 +51,9 @@ class AsyncGeneticAlgorithm(Thread):
             new_population.add_candidate(candidate)
 
         selected_candidates = selection_method.calculate(population)
+        if len(selected_candidates) < 2:
+            raise Exception("Less than 2 candidates were selected")
+
         while new_population.size < population.size:
             parents = random.sample(selected_candidates, 2)
             children = crossover_method.cross(*parents)
