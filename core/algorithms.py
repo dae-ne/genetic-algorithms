@@ -7,6 +7,7 @@ from pubsub import pub
 from core.crossover import CrossoverMethodFactory
 from core.events import AlgorithmFinishedEvent
 from core.fitness_function import TestFunction
+from core.inversion import InversionMethod
 from core.models import AlgorithmOptions
 from core.mutation import MutationMethodFactory
 from core.population import Generator, Population
@@ -22,8 +23,9 @@ class AsyncGeneticAlgorithm(Thread):
         selection_method = SelectionMethodFactory.create(self.options)
         crossover_method = CrossoverMethodFactory.create(self.options)
         mutation_method = MutationMethodFactory.create(self.options)
-        # inversion_method
+        inversion_method = InversionMethod(self.options.inversion_probability)
 
+        execution_time = time.time()
         generations = [Generator.generate_random_population(self.options.population_size,
                                                             self.options.range_from,
                                                             self.options.range_to,
@@ -32,16 +34,17 @@ class AsyncGeneticAlgorithm(Thread):
         self.print_stats(generations[0], with_candidates=False)
 
         for epoch in range(self.options.epochs_amount):
-            generations.append(
-                self.create_next_generation(generations[-1], selection_method, crossover_method, mutation_method))
+            generations.append(self.create_next_generation(generations[-1], selection_method, crossover_method,
+                                                           mutation_method, inversion_method))
 
-        print('after')
+        print("after")
         self.print_stats(generations[-1], with_candidates=False)
+        execution_time = time.time() - execution_time
 
-        event = AlgorithmFinishedEvent("value1", "value2")
+        event = AlgorithmFinishedEvent(generations, execution_time, self.options)
         pub.sendMessage(AlgorithmFinishedEvent.__name__, event=event)
 
-    def create_next_generation(self, population, selection, crossover, mutation):
+    def create_next_generation(self, population, selection, crossover, mutation, inversion):
         new_population = Population()
         elite = population.get_n_best_candidates(self.options.elite_strategy_amount, self.options.maximization)
         for candidate in elite:
@@ -59,7 +62,7 @@ class AsyncGeneticAlgorithm(Thread):
                     break
 
                 mutation.mutate(child)
-                # inversion
+                inversion.inverse(child)
                 new_population.add_candidate(child)
 
         return new_population
@@ -68,6 +71,6 @@ class AsyncGeneticAlgorithm(Thread):
         if with_candidates:
             print("All candidates:")
             print(population)
-        print("Best candidate: {}".format(population.get_n_best_candidates(1, self.options.maximization)[0]))
+        print("Best candidate: {}".format(population.get_best_candidate(self.options.maximization)))
         print("Average score: {}".format(population.get_average_score()))
         print("Standard deviation: {}".format(population.get_standard_deviation()))

@@ -23,6 +23,9 @@ class Population:
     def add_candidate(self, candidate):
         self.candidates.append(candidate)
 
+    def get_best_candidate(self, maximization=False):
+        return self.get_n_best_candidates(maximization=maximization)[0]
+
     def get_n_best_candidates(self, n=1, maximization=False):
         return sorted(self.candidates, key=lambda candidate: candidate.score, reverse=maximization)[:n]
 

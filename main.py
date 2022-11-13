@@ -4,6 +4,7 @@ import sv_ttk
 
 from subs.db import DbEventListener
 from subs.plot import PlotEventListener
+from subs.result import ResultEventListener
 from ui.mvc import OptionsModel, View, Controller
 
 
@@ -27,7 +28,8 @@ class Application(tk.Tk):
 
         event_listeners = (
             PlotEventListener(),
-            DbEventListener())
+            DbEventListener(),
+            ResultEventListener())
 
         for event_listener in event_listeners:
             event_listener.listen()
