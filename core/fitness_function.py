@@ -2,8 +2,10 @@ from abc import ABC, abstractmethod
 
 import math
 
+from core.models import AlgorithmOptions, FitnessFunction
 
-class FitnessFunction(ABC):
+
+class BaseFitnessFunction(ABC):
     @classmethod
     @property
     @abstractmethod
@@ -15,8 +17,24 @@ class FitnessFunction(ABC):
         pass
 
 
-class BealeFunction(FitnessFunction):
-    # example function, minimum = 0 in (3, 0.5), range [-4.5, 4.5]
+class FitnessFunctionFactory:
+    @staticmethod
+    def create(options: AlgorithmOptions) -> BaseFitnessFunction:
+        match options.fitness_function:
+            case FitnessFunction.BEALE_FUNCTION:
+                return BealeFunction()
+            case FitnessFunction.EGGHOLDER_FUNCTION:
+                return EggholderFunction()
+            case FitnessFunction.CROSS_IN_TRAY_FUNCTION:
+                return CrossInTrayFunction()
+            case FitnessFunction.TEST_FUNCTION:
+                return TestFunction()
+            case _:
+                raise Exception("")
+
+
+class BealeFunction(BaseFitnessFunction):
+    # example function, minimum = 0 in (3, 0.5), range [-4.5, 4.5], maximum in the corners
 
     NUM_OF_VARIABLES = 2
 
@@ -29,8 +47,8 @@ class BealeFunction(FitnessFunction):
         return (1.5 - x + x*y)**2 + (2.25 - x + x*y*y)**2 + (2.625 - x + x*y**3)**2
 
 
-class EggholderFunction(FitnessFunction):
-    # example function, minimum = -959.6407 in (512, 404.2319), range [-512, 512]
+class EggholderFunction(BaseFitnessFunction):
+    # example function, minimum = -959.6407 in (512, 404.2319), range [-512, 512], maximum in the corners
 
     NUM_OF_VARIABLES = 2
 
@@ -45,8 +63,8 @@ class EggholderFunction(FitnessFunction):
         return -(y + 47) * math.sin(a) - x * math.sin(b)
 
 
-class CrossInTrayFunction(FitnessFunction):
-    # example function, minimum = -2.06261 in (+-1.3491, +=1.3491), range [-10, 10]
+class CrossInTrayFunction(BaseFitnessFunction):
+    # example function, minimum = -2.06261 in (+-1.3491, +=1.3491), range [-10, 10], maximum in (0,0) range [-2, 2]
 
     NUM_OF_VARIABLES = 2
 
@@ -61,7 +79,7 @@ class CrossInTrayFunction(FitnessFunction):
         return -0.0001 * b ** 0.1
 
 
-class TestFunction(FitnessFunction):
+class TestFunction(BaseFitnessFunction):
     # example function, minimum = 0 in (0, 0)
 
     NUM_OF_VARIABLES = 2

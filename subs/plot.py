@@ -38,6 +38,7 @@ class PlotEventListener(EventListener):
         plt.plot(epochs, bests)
 
         plt.savefig(file_name)
+        plt.close(fig)
 
     @staticmethod
     def __create_average_plot(epochs, averages, stds, file_name):
@@ -50,3 +51,4 @@ class PlotEventListener(EventListener):
         plt.errorbar(epochs, averages, yerr=stds, ecolor='r', elinewidth=0.7, linewidth=1, capsize=1)
 
         plt.savefig(file_name)
+        plt.close(fig)

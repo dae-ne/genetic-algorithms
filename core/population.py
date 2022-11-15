@@ -2,7 +2,7 @@ import math
 import random
 import statistics
 
-from core.fitness_function import FitnessFunction
+from core.fitness_function import BaseFitnessFunction
 
 
 class Population:
@@ -57,8 +57,8 @@ class Candidate:
 
     @fitness_function.setter
     def fitness_function(self, value):
-        if not isinstance(value, FitnessFunction):
-            raise ValueError("Given object is not an instance of FitnessFunction.")
+        if not isinstance(value, BaseFitnessFunction):
+            raise ValueError("Given object is not an instance of BaseFitnessFunction.")
         self.__fitness_function = value
 
     @property

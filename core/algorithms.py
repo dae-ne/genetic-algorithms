@@ -6,7 +6,7 @@ from pubsub import pub
 
 from core.crossover import CrossoverMethodFactory
 from core.events import AlgorithmFinishedEvent
-from core.fitness_function import TestFunction, BealeFunction, EggholderFunction, CrossInTrayFunction
+from core.fitness_function import FitnessFunctionFactory
 from core.inversion import InversionMethod
 from core.models import AlgorithmOptions
 from core.mutation import MutationMethodFactory
@@ -20,6 +20,7 @@ class AsyncGeneticAlgorithm(Thread):
         self.options = options
 
     def run(self):
+        fitness_function = FitnessFunctionFactory.create(self.options)
         selection_method = SelectionMethodFactory.create(self.options)
         crossover_method = CrossoverMethodFactory.create(self.options)
         mutation_method = MutationMethodFactory.create(self.options)
@@ -30,7 +31,7 @@ class AsyncGeneticAlgorithm(Thread):
                                                             self.options.range_from,
                                                             self.options.range_to,
                                                             self.options.precision,
-                                                            CrossInTrayFunction())]
+                                                            fitness_function)]
         self.print_stats(generations[0], with_candidates=False)
 
         for epoch in range(self.options.epochs_amount):

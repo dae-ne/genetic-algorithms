@@ -2,6 +2,13 @@ from strenum import StrEnum
 from enum import auto
 
 
+class FitnessFunction(StrEnum):
+    BEALE_FUNCTION = auto()
+    EGGHOLDER_FUNCTION = auto()
+    CROSS_IN_TRAY_FUNCTION = auto()
+    TEST_FUNCTION = auto()
+
+
 class SelectionMethod(StrEnum):
     BEST = auto()
     TOURNAMENT = auto()
@@ -22,6 +29,7 @@ class MutationMethod(StrEnum):
 
 class AlgorithmOptions:
     def __init__(self,
+                 fitness_function: FitnessFunction,
                  range_from: int,
                  range_to: int,
                  population_size: int,
@@ -36,6 +44,7 @@ class AlgorithmOptions:
                  crossover_method: CrossoverMethod,
                  mutation_method: MutationMethod,
                  maximization: bool):
+        self.fitness_function = fitness_function
         self.range_from = range_from
         self.range_to = range_to
         self.population_size = population_size
