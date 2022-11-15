@@ -20,7 +20,7 @@ class PlotEventListener(EventListener):
             reader = csv.DictReader(file, delimiter=",")
             for row in reader:
                 epoch.append(int(row["epoch"]))
-                best.append(float(row["best"]))
+                best.append(float(row["best_score"]))
                 average.append(float(row["average"]))
                 std.append(float(row["std"]))
 
