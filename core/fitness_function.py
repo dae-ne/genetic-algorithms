@@ -34,7 +34,7 @@ class FitnessFunctionFactory:
 
 
 class BealeFunction(BaseFitnessFunction):
-    # example function, minimum = 0 in (3, 0.5), range [-4.5, 4.5], maximum in the corners
+    # minimum = 0 in (3, 0.5), range [-4.5, 4.5], maximum in the corners
 
     NUM_OF_VARIABLES = 2
 
@@ -44,11 +44,11 @@ class BealeFunction(BaseFitnessFunction):
                             .format(BealeFunction.NUM_OF_VARIABLES, len(variables)))
         x, y = variables
 
-        return (1.5 - x + x*y)**2 + (2.25 - x + x*y*y)**2 + (2.625 - x + x*y**3)**2
+        return (1.5 - x + x * y) ** 2 + (2.25 - x + x * y * y) ** 2 + (2.625 - x + x * y ** 3) ** 2
 
 
 class EggholderFunction(BaseFitnessFunction):
-    # example function, minimum = -959.6407 in (512, 404.2319), range [-512, 512], maximum in the corners
+    # minimum = -959.6407 in (512, 404.2319), range [-512, 512], maximum in the corners
 
     NUM_OF_VARIABLES = 2
 
@@ -64,7 +64,7 @@ class EggholderFunction(BaseFitnessFunction):
 
 
 class CrossInTrayFunction(BaseFitnessFunction):
-    # example function, minimum = -2.06261 in (+-1.3491, +=1.3491), range [-10, 10], maximum in (0,0) range [-2, 2]
+    # minimum = -2.06261 in (+-1.3491, +=1.3491), range [-10, 10], maximum in (0,0) range [-2, 2]
 
     NUM_OF_VARIABLES = 2
 
