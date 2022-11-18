@@ -5,12 +5,13 @@ from apoor import fdir
 from automapper import mapper
 
 from core.algorithms import AsyncGeneticAlgorithm
-from core.models import SelectionMethod, AlgorithmOptions, CrossoverMethod, MutationMethod
+from core.models import SelectionMethod, AlgorithmOptions, CrossoverMethod, MutationMethod, FitnessFunction
 from ui.widgets import Selectbox
 
 
 class OptionsModel:
     def __init__(self):
+        self.__fitness_function = None
         self.__range_from = None
         self.__range_to = None
         self.__population_size = None
@@ -25,6 +26,17 @@ class OptionsModel:
         self.__crossover_method = None
         self.__mutation_method = None
         self.__maximization = None
+
+    @property
+    def fitness_function(self):
+        return self.__fitness_function
+
+    @fitness_function.setter
+    def fitness_function(self, value):
+        if not True:
+            raise ValueError("")
+
+        self.__fitness_function = value
 
     @property
     def range_from(self):
@@ -198,59 +210,64 @@ class View(ttk.Frame):
         for column_index in range(number_of_columns):
             self.columnconfigure(column_index, weight=1)
 
-        self.range_from = self.add_spinbox(-10, "Range from", -100, 100, 0, 0)
-        self.range_to = self.add_spinbox(10, "Range to", -100, 100, 0, 1)
-        self.population_size = self.add_spinbox(40, "Population size", 0, 100, 0, 2)
-        self.precision = self.add_spinbox(5, "Precision", 0, 20, 0, 3)
-        self.epochs_amount = self.add_spinbox(100, "Epochs amount", 0, 100, 0, 4)
+        self.fitness_function = self.add_selectbox(
+            FitnessFunction.BEALE_FUNCTION,
+            fdir(FitnessFunction),
+            "FitnessFunction",
+            0, 0)
 
-        self.selection_param = self.add_spinbox(60, "Selection param ([%] for BEST, k for TOUR)", 0, 100, 1, 0)
-        self.elite_strategy_amount = self.add_spinbox(1, "Elite Strategy amount", 0, 100, 1, 1)
-        self.crossover_probability = self.add_spinbox(70, "Crossover probability [%]", 0, 100, 1, 2)
-        self.mutation_probability = self.add_spinbox(20, "Mutation probability [%]", 0, 100, 1, 3)
-        self.inversion_probability = self.add_spinbox(20, "Inversion probability [%]", 0, 100, 1, 4)
+        self.range_from = self.add_spinbox(-10, "Range from", -100, 100, 0, 1)
+        self.range_to = self.add_spinbox(10, "Range to", -100, 100, 0, 2)
+        self.population_size = self.add_spinbox(40, "Population size", 0, 100, 0, 3)
+        self.epochs_amount = self.add_spinbox(100, "Epochs amount", 0, 100, 0, 4)
 
         self.selection_method = self.add_selectbox(
             SelectionMethod.BEST,
             fdir(SelectionMethod),
             "Selection method",
-            2, 0)
+            1, 0)
 
         self.crossover_method = self.add_selectbox(
             CrossoverMethod.ONE_POINT,
             fdir(CrossoverMethod),
             "Crossover method",
-            2, 1)
+            1, 1)
 
         self.mutation_method = self.add_selectbox(
             MutationMethod.ONE_POINT,
             fdir(MutationMethod),
             "Mutation method",
-            2, 2)
+            1, 2)
+
+        self.elite_strategy_amount = self.add_spinbox(1, "Elite Strategy amount", 0, 100, 1, 3)
+        self.precision = self.add_spinbox(5, "Precision", 0, 20, 1, 4)
+
+        self.selection_param = self.add_spinbox(60, "Selection param ([%] for BEST, k for TOUR)", 0, 100, 2, 0)
+        self.crossover_probability = self.add_spinbox(70, "Crossover probability [%]", 0, 100, 2, 1)
+        self.mutation_probability = self.add_spinbox(20, "Mutation probability [%]", 0, 100, 2, 2)
+        self.inversion_probability = self.add_spinbox(20, "Inversion probability [%]", 0, 100, 2, 3)
 
         self.maximization = tk.StringVar()
-
         checkbox = ttk.Checkbutton(
             self,
             text="Maximization",
             variable=self.maximization,
             onvalue="1",
             offvalue="")
-
-        checkbox.grid(column=2, row=3, sticky=tk.SW, padx=self.GRID_GAP_X, pady=self.GRID_GAP_Y)
+        checkbox.grid(column=2, row=4, sticky=tk.SW, padx=self.GRID_GAP_X, pady=self.GRID_GAP_Y)
 
         button = ttk.Button(
             self,
             text="Start",
             style="Accent.TButton",
             command=self.submit)
-
         button.grid(column=2, row=4, sticky=tk.SE, padx=self.GRID_GAP_X, pady=self.GRID_GAP_Y)
 
         self.controller = None
 
     def submit(self):
         self.controller.submit(
+            self.fitness_function.get(),
             float(self.range_from.get()),
             float(self.range_to.get()),
             int(self.population_size.get()),
@@ -299,6 +316,7 @@ class Controller:
         self.view = view
 
     def submit(self,
+               fitness_function,
                range_from,
                range_to,
                population_size,
@@ -313,6 +331,7 @@ class Controller:
                crossover_method,
                mutation_method,
                maximization):
+        self.model.fitness_function = fitness_function
         self.model.range_from = range_from
         self.model.range_to = range_to
         self.model.population_size = population_size
