@@ -1,23 +1,22 @@
 import csv
-import os
-import time
+import pathlib
 
 from pubsub import pub
 
-from core.events import EventListener, AlgorithmFinishedEvent, DataSavedEvent
+from core.events import EventListener, AlgorithmFinishedEvent
 
 
-class DbEventListener(EventListener):
+class StorageEventListener(EventListener):
     def listen(self):
         pub.subscribe(self.__handle, AlgorithmFinishedEvent.__name__)
 
     @staticmethod
     def __handle(event: AlgorithmFinishedEvent):
-        directory_name = time.strftime("%Y-%m-%d %H-%M-%S")
-        os.mkdir(directory_name)
-        DbEventListener.__save_info(directory_name, event.execution_time, event.generations[-1], event.options)
+        dir_path = "output/" + event.time_finished
+        pathlib.Path(dir_path).mkdir(parents=True, exist_ok=True)
+        StorageEventListener.__save_info(dir_path, event.execution_time, event.generations[-1], event.options)
 
-        file_name = directory_name + "/results.csv"
+        file_name = dir_path + "/results.csv"
         with open(file_name, "w", encoding="UTF8") as file:
             writer = csv.writer(file)
             writer.writerow(["epoch", "best_solution", "best_score", "average", "std"])
@@ -30,9 +29,6 @@ class DbEventListener(EventListener):
                                  generation.get_average_score(),
                                  generation.get_standard_deviation()])
 
-        data_saved_event = DataSavedEvent(directory_name, file_name)
-        pub.sendMessage(DataSavedEvent.__name__, event=data_saved_event)
-
     @staticmethod
     def __save_info(directory_name, execution_time, last_generation, options):
         info_file_name = directory_name + "/results.txt"
@@ -41,8 +37,8 @@ class DbEventListener(EventListener):
         with open(info_file_name, "w", encoding="UTF8") as file:
             file.write("Function: {} (maximization? {})\n".format(options.fitness_function, options.maximization))
             file.write("f({:.5f}, {:.5f}) = {:.5f}\n".format(solution.chromosomes[0].decode_to_decimal(),
-                                                           solution.chromosomes[1].decode_to_decimal(),
-                                                           solution.score))
+                                                             solution.chromosomes[1].decode_to_decimal(),
+                                                             solution.score))
             file.write("Range: [{}, {}]\n".format(options.range_from, options.range_to))
             file.write("Execution time: {}s\n\n".format(execution_time))
 

@@ -41,8 +41,9 @@ class AsyncGeneticAlgorithm(Thread):
         print("after")
         self.print_stats(generations[-1], with_candidates=False)
         execution_time = time.time() - execution_time
+        time_finished = time.strftime("%Y-%m-%d_%H-%M-%S")
 
-        event = AlgorithmFinishedEvent(generations, execution_time, self.options)
+        event = AlgorithmFinishedEvent(generations, execution_time, time_finished, self.options)
         pub.sendMessage(AlgorithmFinishedEvent.__name__, event=event)
 
     def create_next_generation(self, population, selection, crossover, mutation, inversion):
