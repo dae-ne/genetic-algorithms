@@ -48,11 +48,13 @@ class SelectionRouletteMethod(SelectionMethodAlgorithm):
     def calculate(self, population):
         candidates = []
 
+        def fitness(score, maximization): return score if maximization else 1 / score
+
         for _ in range(self.__size):
             min_candidate = min(population.candidates, key=attrgetter("score"))
             offset = 1 - min_candidate.score if min_candidate.score <= 0 else 0
-            fitness_sum = sum([1 / (candidate.score + offset) for candidate in population.candidates])
-            probabilities = [1 / (candidate.score + offset) / fitness_sum for candidate in population.candidates]
+            fitness_sum = sum([fitness(candidate.score + offset, self.maximization) for candidate in population.candidates])
+            probabilities = [fitness(candidate.score + offset, self.maximization) / fitness_sum for candidate in population.candidates]
             candidates.append(np.random.choice(population.candidates, p=probabilities))
 
         return candidates
