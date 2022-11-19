@@ -6,6 +6,7 @@ class FitnessFunction(StrEnum):
     BEALE_FUNCTION = auto()
     EGGHOLDER_FUNCTION = auto()
     CROSS_IN_TRAY_FUNCTION = auto()
+    SCHAFFER_N4_FUNCTION = auto()
     TEST_FUNCTION = auto()
 
 

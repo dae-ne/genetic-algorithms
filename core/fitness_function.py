@@ -27,6 +27,8 @@ class FitnessFunctionFactory:
                 return EggholderFunction()
             case FitnessFunction.CROSS_IN_TRAY_FUNCTION:
                 return CrossInTrayFunction()
+            case FitnessFunction.SCHAFFER_N4_FUNCTION:
+                return SchafferN4Function()
             case FitnessFunction.TEST_FUNCTION:
                 return TestFunction()
             case _:
@@ -77,6 +79,23 @@ class CrossInTrayFunction(BaseFitnessFunction):
         b = math.fabs(math.sin(x) * math.sin(y) * math.exp(a)) + 1
 
         return -0.0001 * b ** 0.1
+
+
+class SchafferN4Function(BaseFitnessFunction):
+    # minimum = 0.292579 in (0, +-1.25313) or (+-1.25313, 0), range [-100, 100], maximum = 1 in (0,0)
+
+    NUM_OF_VARIABLES = 2
+
+    def evaluate(self, variables):
+        if len(variables) != SchafferN4Function.NUM_OF_VARIABLES:
+            raise Exception("Function takes {} arguments, but {} were given."
+                            .format(SchafferN4Function.NUM_OF_VARIABLES, len(variables)))
+        x, y = variables
+
+        numerator = math.cos(math.sin(math.fabs(x ** 2 - y ** 2))) ** 2 - 0.5
+        denominator = (1 + 0.001 * (x ** 2 + y ** 2)) ** 2
+
+        return 0.5 + numerator / denominator
 
 
 class TestFunction(BaseFitnessFunction):
