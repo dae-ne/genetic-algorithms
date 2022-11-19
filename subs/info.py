@@ -1,7 +1,7 @@
-from pubsub import pub
 import tkinter as tk
 from tkinter import ttk
 
+from pubsub import pub
 
 from core.events import EventListener, AlgorithmFinishedEvent
 
