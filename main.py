@@ -2,6 +2,7 @@ import tkinter as tk
 
 import sv_ttk
 
+from subs.info import StatsEventListener
 from subs.storage import StorageEventListener
 from subs.plot import PlotEventListener
 from ui.mvc import OptionsModel, View, Controller
@@ -26,6 +27,7 @@ class Application(tk.Tk):
         sv_ttk.use_dark_theme()
 
         event_listeners = (
+            StatsEventListener(),
             PlotEventListener(),
             StorageEventListener())
 
