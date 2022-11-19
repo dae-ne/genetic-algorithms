@@ -2,7 +2,7 @@ import tkinter as tk
 
 import sv_ttk
 
-from subs.db import DbEventListener
+from subs.storage import StorageEventListener
 from subs.plot import PlotEventListener
 from ui.mvc import OptionsModel, View, Controller
 
@@ -27,7 +27,7 @@ class Application(tk.Tk):
 
         event_listeners = (
             PlotEventListener(),
-            DbEventListener())
+            StorageEventListener())
 
         for event_listener in event_listeners:
             event_listener.listen()
