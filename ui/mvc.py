@@ -242,7 +242,7 @@ class View(ttk.Frame):
         self.elite_strategy_amount = self.add_spinbox(1, "Elite Strategy amount", 0, 100, 1, 3)
         self.precision = self.add_spinbox(5, "Precision", 0, 20, 1, 4)
 
-        self.selection_param = self.add_spinbox(60, "Selection param ([%] for BEST, k for TOUR)", 0, 100, 2, 0)
+        self.selection_param = self.add_spinbox(60, "Selection param ([%] - BEST, k)", 0, 100, 2, 0)
         self.crossover_probability = self.add_spinbox(70, "Crossover probability [%]", 0, 100, 2, 1)
         self.mutation_probability = self.add_spinbox(20, "Mutation probability [%]", 0, 100, 2, 2)
         self.inversion_probability = self.add_spinbox(20, "Inversion probability [%]", 0, 100, 2, 3)
